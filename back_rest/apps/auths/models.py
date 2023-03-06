@@ -20,6 +20,7 @@ class UserManager(BaseUserManager):
         password: str,
         first_name: str,
         last_name: str,
+        username: str
     ) -> 'User':
 
         if not email:
@@ -29,6 +30,7 @@ class UserManager(BaseUserManager):
             email=self.normalize_email(email),
             password=password
         )
+        client.username = username
         client.first_name = first_name
         client.last_name = last_name
         client.set_password(password)
@@ -41,12 +43,14 @@ class UserManager(BaseUserManager):
         password: str,
         first_name: str,
         last_name: str,
+        username: str
     ) -> 'User':
 
         client: 'User' = self.model(
             email=self.normalize_email(email),
             password=password
         )
+        client.username = username
         client.first_name = first_name
         client.last_name = last_name
         client.is_staff = True
@@ -59,6 +63,11 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     """User."""
 
+    username = models.CharField(
+        max_length=20,
+        verbose_name='имя пользователя',
+        unique=True
+    )
     email = models.EmailField(
         max_length=100,
         unique=True,
@@ -94,8 +103,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_digits=8,
         decimal_places=2
     )
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
 
     objects = UserManager()
 

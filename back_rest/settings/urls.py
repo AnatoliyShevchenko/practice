@@ -4,7 +4,11 @@ from django.conf import settings
 
 from rest_framework.routers import DefaultRouter
 
-from auths.views import UserView, RegistrationView
+from auths.views import (
+    RegistrationView, 
+    LoginView,
+    LogoutView,
+)
 from marvel.views import ComicsView
 
 
@@ -15,9 +19,10 @@ urlpatterns = [
 router: DefaultRouter = DefaultRouter(
     trailing_slash=True
 )
-router.register('user', UserView)
 router.register('comics', ComicsView)
 router.register('registration', RegistrationView)
+router.register('login', LoginView)
+router.register('logout', LogoutView)
 
 if settings.DEBUG:
     urlpatterns += [

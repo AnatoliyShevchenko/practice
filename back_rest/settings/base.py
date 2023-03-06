@@ -27,7 +27,6 @@ DJANGO_APPS = [
     'django_extensions',
 ]
 PROJECT_APPS = [
-
     'auths.apps.AuthsConfig',
     'abstracts.apps.AbstractsConfig',
     'marvel.apps.MarvelConfig'
@@ -143,6 +142,7 @@ IPYTHON_KERNEL_DISPLAY_NAME = "Django Shell-Plus"
 
 INTERNAL_IPS = [
     "127.0.0.1",
+    "172.28.0.230"
 ]
 CORS_ALLOW_ALL_ORIGINS = True
 
