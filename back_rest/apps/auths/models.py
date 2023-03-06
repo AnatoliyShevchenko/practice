@@ -7,17 +7,20 @@ from django.contrib.auth.models import (
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
+from functools import cached_property
 from typing import Any
+from datetime import datetime
 
 
-# Create your models here.
 class UserManager(BaseUserManager):
     """ClientManager."""
 
     def create_user(
         self,
         email: str,
-        password: str
+        password: str,
+        first_name: str,
+        last_name: str
     ) -> 'User':
 
         if not email:
@@ -25,7 +28,9 @@ class UserManager(BaseUserManager):
 
         client: 'User' = self.model(
             email=self.normalize_email(email),
-            password=password
+            password=password,
+            first_name=first_name,
+            last_name=last_name
         )
         client.set_password(password)
         client.save(using=self._db)
@@ -34,12 +39,16 @@ class UserManager(BaseUserManager):
     def create_superuser(
         self,
         email: str,
-        password: str
+        password: str,
+        first_name: str,
+        last_name: str
     ) -> 'User':
 
         client: 'User' = self.model(
             email=self.normalize_email(email),
-            password=password
+            password=password,
+            first_name=first_name,
+            last_name=last_name
         )
         client.is_staff = True
         client.is_superuser = True
@@ -51,41 +60,46 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     """User."""
 
-    email = models.EmailField(
+    email: str = models.EmailField(
         max_length=100,
         unique=True,
         verbose_name='почта'
     )
-    first_name = models.CharField(
+    first_name: str = models.CharField(
         verbose_name='имя',
         max_length=50
     )
-    last_name = models.CharField(
+    last_name: str = models.CharField(
         verbose_name='фамилия',
         max_length=50
     )
-    is_active = models.BooleanField(
+    is_active: bool = models.BooleanField(
         default=True,
         verbose_name='активность'
     )
-    is_superuser = models.BooleanField(
+    is_superuser: bool = models.BooleanField(
         default=False,
         verbose_name='администратор'
     )
-    is_staff = models.BooleanField(
+    is_staff: bool = models.BooleanField(
         default=False,
         verbose_name='менеджер'
     )
-    date_joined = models.DateTimeField(
+    date_joined: datetime = models.DateTimeField(
         default=timezone.now,
         verbose_name='дата регистрации'
     )
-    balance = models.FloatField(
+    balance: float = models.DecimalField(
         default=0.0,
+        max_digits=8,
+        decimal_places=2,
         verbose_name='баланс'
     )
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = (
+        'first_name',
+        'last_name'
+    )
 
     objects = UserManager()
 
@@ -96,15 +110,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = 'клиент'
         verbose_name_plural = 'клиенты'
 
-    # def save(
-    #     self,
-    #     *args: Any,
-    #     **kwargs: Any
-    # ) -> None:
-    #     self.full_clean()
-    #     super().save(*args, **kwargs)
-
-    @property
+    @cached_property
     def fullname(self) -> str:
         return f'{self.first_name} {self.last_name}'
 

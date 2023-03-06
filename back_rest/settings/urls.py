@@ -15,7 +15,7 @@ urlpatterns = [
 router: DefaultRouter = DefaultRouter(
     trailing_slash=False
 )
-router.register('user', UserView)
+router.register('users', UserView)
 router.register('comics', ComicsView)
 
 if settings.DEBUG:

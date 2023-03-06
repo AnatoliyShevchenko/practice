@@ -36,8 +36,8 @@ class Comics(AbstractModel, models.Model):
     )
     genres: Genre = models.ManyToManyField(
         verbose_name='жанр',
+        related_name='comics',
         to=Genre,
-        related_name='comics'
     )
     author: User = models.ForeignKey(
         verbose_name='автор',

@@ -9,7 +9,7 @@ from .serializers import UserSerializer, UserComicsSerializer
 
 from typing import Optional
 
-# Create your views here.
+
 class UserView(ViewSet):
     """User View."""
 

@@ -15,15 +15,32 @@ class ComicsView(ViewSet):
 
     def list(self, request: Request) -> Response:
         """GET Method. get all objects."""
+
         comics: QuerySet[Comics] = self.queryset.all()
         serializer: ComicsSerializer = \
-        ComicsSerializer(
-            comics,
-            many=True
-        )
+            ComicsSerializer(
+                comics,
+                many=True
+            )
         return Response(
-            {
-                'Users': serializer.data
-            }
+            data={
+                'Comics': serializer.data
+            },
+            status=200
+        )
+
+    def retrieve(self, request: Request, pk: str) -> Response:
+        """GET Method. get all objects."""
+        
+        comics: Comics = Comics.objects.get(id=pk)
+        serializer: ComicsSerializer = \
+            ComicsSerializer(
+                comics
+            )
+        return Response(
+            data={
+                'Comics': serializer.data
+            },
+            status=200
         )
 
