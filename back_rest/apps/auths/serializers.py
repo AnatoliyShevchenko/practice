@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from django.db.models import QuerySet
+from django.contrib.auth.hashers import make_password, check_password
 
 from .models import User
 from marvel.models import Comics
@@ -44,3 +45,35 @@ class UserComicsSerializer(serializers.ModelSerializer):
     def get_comics(self, id):
         comics: QuerySet = Comics.objects.filter(id=id).values('title')
         return comics
+    
+
+class RegistrationSerializer(serializers.ModelSerializer):
+    """Registration Serializer."""
+
+    password2 = serializers.CharField()
+
+    class Meta:
+        model = User
+        fields = (
+            'email',
+            'first_name',
+            'last_name',
+            'password',
+            'password2'
+        )
+
+    def validate(self, attrs):
+        if attrs.get('password') != attrs.get('password2'):
+            raise serializers.ValidationError(
+                'passwords not match'
+            )
+        return super().validate(attrs)
+
+    def save(self, **kwargs):
+        user = User.objects.create(
+            email = self.data.get('email'),
+            first_name = self.data.get('first_name'),
+            last_name = self.data.get('last_name'),
+            password = make_password(self.data.get('password'))
+        )
+        return user

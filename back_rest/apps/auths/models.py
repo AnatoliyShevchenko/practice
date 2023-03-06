@@ -17,7 +17,9 @@ class UserManager(BaseUserManager):
     def create_user(
         self,
         email: str,
-        password: str
+        password: str,
+        first_name: str,
+        last_name: str,
     ) -> 'User':
 
         if not email:
@@ -27,6 +29,8 @@ class UserManager(BaseUserManager):
             email=self.normalize_email(email),
             password=password
         )
+        client.first_name = first_name
+        client.last_name = last_name
         client.set_password(password)
         client.save(using=self._db)
         return client
@@ -34,13 +38,17 @@ class UserManager(BaseUserManager):
     def create_superuser(
         self,
         email: str,
-        password: str
+        password: str,
+        first_name: str,
+        last_name: str,
     ) -> 'User':
 
         client: 'User' = self.model(
             email=self.normalize_email(email),
             password=password
         )
+        client.first_name = first_name
+        client.last_name = last_name
         client.is_staff = True
         client.is_superuser = True
         client.set_password(password)
@@ -80,12 +88,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=timezone.now,
         verbose_name='дата регистрации'
     )
-    balance = models.FloatField(
+    balance = models.DecimalField(
         default=0.0,
-        verbose_name='баланс'
+        verbose_name='баланс',
+        max_digits=8,
+        decimal_places=2
     )
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['first_name', 'last_name']
 
     objects = UserManager()
 

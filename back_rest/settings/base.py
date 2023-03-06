@@ -21,12 +21,13 @@ DJANGO_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'corsheaders',
     'rest_framework',
     'debug_toolbar',
     'django_extensions',
 ]
 PROJECT_APPS = [
+
     'auths.apps.AuthsConfig',
     'abstracts.apps.AbstractsConfig',
     'marvel.apps.MarvelConfig'
@@ -39,6 +40,7 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -142,6 +144,7 @@ IPYTHON_KERNEL_DISPLAY_NAME = "Django Shell-Plus"
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+CORS_ALLOW_ALL_ORIGINS = True
 
 DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.history.HistoryPanel',

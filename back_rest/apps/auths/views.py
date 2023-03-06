@@ -5,7 +5,11 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 
 from .models import User
-from .serializers import UserSerializer, UserComicsSerializer
+from .serializers import (
+    UserSerializer, 
+    UserComicsSerializer,
+    RegistrationSerializer
+)
 
 from typing import Optional
 
@@ -50,3 +54,22 @@ class UserView(ViewSet):
                 }
             })
 
+
+class RegistrationView(ViewSet):
+    """Registration View."""
+
+    queryset: QuerySet = User.objects.all()
+
+    def create(self, request: Request) -> Response:
+        serializer: RegistrationSerializer =\
+            RegistrationSerializer(
+                data=request.data
+            )
+        if not serializer.is_valid():
+            return Response({
+                'error' : serializer.errors
+            })
+        serializer.save()
+        return Response({
+            'success' : 'success'
+        })
